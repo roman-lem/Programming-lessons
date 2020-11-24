@@ -85,7 +85,7 @@ void half(Decimal *res, Decimal *num){
 	int flag = 0, i = 0;
 	for(i = num->n; i >= 0; i--){
 
-		res->a[i] = num->a[i] / 2;
+		res->a[i] = (num->a[i] + flag * 10) / 2;
 
 		flag = num->a[i] % 2;
 	}
