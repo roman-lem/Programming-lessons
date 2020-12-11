@@ -6,7 +6,7 @@
 
 struct _Decimal {
 
-    char a[N];       // number is a[0]*10^0 + a[1]*10^1 + ..+ a[n]*10^n
+    char a[N];       // aber is a[0]*10^0 + a[1]*10^1 + ..+ a[n]*10^n
 
     unsigned int n;  // наибольшая степень десяти
 
@@ -16,15 +16,15 @@ typedef struct _Decimal Decimal;
 
 //---------------------------
 
-Decimal mult_int(Decimal num, unsigned int x);
+Decimal mult_int(Decimal a, unsigned int x);
 
-void printDec(Decimal *num);
+void printDec(Decimal *a);
 
 //---------------------------
 
 int main(){
 
-	Decimal number = {{0}, 0};
+	Decimal aber = {{0}, 0};
 	Decimal res = {{0}, 0};
 	unsigned int x = 0;
 
@@ -38,7 +38,7 @@ int main(){
 
 		if(ch >= '0' && ch <= '9'){
 
-			number.a[i++] = (int)(ch - '0');
+			aber.a[i++] = (int)(ch - '0');
 		}
 
 		ch = getc(fp);
@@ -51,9 +51,9 @@ int main(){
 		
 		if(ch >= '0' && ch <= '9'){
 
-			number.n = number.n * 10 + (int)(ch - '0');
+			aber.n = aber.n * 10 + (int)(ch - '0');
 
-			//printf("number.n = %d\n", number.n);
+			//printf("aber.n = %d\n", aber.n);
 		}
 
 		ch = getc(fp);
@@ -71,11 +71,11 @@ int main(){
     }
 
 
-	//printDec(&number);
+	//printDec(&aber);
 
 	//return 0;
 
-	res = mult_int(number, x);
+	res = mult_int(aber, x);
 
 	fprintf(fp, "{{%d", res.a[0]);
 	for(int i = 1; i <= res.n; i++){
@@ -90,16 +90,18 @@ int main(){
 
 //--------------------------
 
-Decimal mult_int(Decimal num, unsigned int x){
+Decimal mult_int(Decimal *a){
 
-	Decimal res = {{0}, num.n};
+	int x = 10;
+
+	Decimal res = {{0}, a->n};
 
 	int flag = 0, i = 0;
-	for(i = 0; i <= num.n; i++){
+	for(i = 0; i <= a->n; i++){
 
-		res.a[i] = (num.a[i] * x) % 10 + flag;
+		res.a[i] = (a->a[i] * x) % 10 + flag;
 
-		flag = (num.a[i] * x) / 10;
+		flag = (a->a[i] * x) / 10;
 	}
 
 	if(flag != 0){
@@ -108,20 +110,31 @@ Decimal mult_int(Decimal num, unsigned int x){
 		res.n++;
 	}
 
-	return res;
+	Decimal *res2 = (Decimal*) calloc(1, 12);
+
+	res2->n = res.n;
+
+	res2->a = (char*) calooc(res.n + 1, sizeof(char));
+
+	for(i = 0; i < res.n + 1; i++){
+
+		res2->a[i] = res.a[i];
+	}
+
+	return res2;
 }
 
 //-------------------------
 
-void printDec(Decimal *num){
+void printDec(Decimal *a){
 
-  fprintf(stdout, "{{%d", num->a[0]);
-	for(int i = 1; i <= num->n; i++){
+  fprintf(stdout, "{{%d", a->a[0]);
+	for(int i = 1; i <= a->n; i++){
 
-		fprintf(stdout, ", %d", num->a[i]);
+		fprintf(stdout, ", %d", a->a[i]);
 	}
 
-	fprintf(stdout, "}, %d}\n", num->n);
+	fprintf(stdout, "}, %d}\n", a->n);
 
 	return;
 }
